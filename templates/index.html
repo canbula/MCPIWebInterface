@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+</head>
+<body>
+<div class="row">
+<div class="w-50 mx-auto">
+    <h1 class="text-center">Monte Carlo PI</h1>
+    <hr>
+    <form action="/" target="_self" method="post">
+        <div class="mb-3">
+            <label for="number_of_points" class="form-label">
+                Number of Points
+            </label>
+            <input type="number" id="number_of_points" class="form-control" name="number_of_points" value="{{ number_of_points }}" aria-describedby="number_of_points_help" />
+            <div id="number_of_points_help" class="form-text">
+                Number of total points to be thrown to the coordinate system.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="number_of_processors" class="form-label">
+                Number of Processors: <output id="number_of_processors_text" name="number_of_processors_text" for="number_of_processors">{{ number_of_processors }}</output>
+            </label>
+            <input type="range" class="form-range"
+                   min="1" max="{{ max_number_of_processors }}" step="1.0"
+                   name="number_of_processors" id="number_of_processors"
+                   aria-describedby="number_of_processors_help"
+                   value="{{ number_of_processors }}"
+                   oninput="this.form.number_of_processors_text.value=this.value" />
+            <div id="number_of_processors_help" class="form-text">
+                Select number of processors to be used for calculation. <br>
+                Maximum value is {{ max_number_of_processors }} for this PC.
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Start</button>
+    </form>
+    {% if show_output %}
+        <hr>
+        <script>
+            let done = 'n';
+        </script>
+        <div id="results"></div>
+        <hr>
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-center">Plot</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center" id="generated_plot">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center">
+                <a href="#" id="plot_link" onclick="$('#generated_plot').load('plot.html');">Show the Progress</a>
+            </div>
+        </div>
+        <!--
+        <script>
+            setInterval(function() {
+                $('#generated_plot').load('plot.html');
+            }, 1000);
+        </script>
+        -->
+        <script>
+            const runner = setInterval(function() {
+                $('#results').load('results.html');
+                if (done === 'y') {
+                    clearInterval(runner);
+                    $('#generated_plot').load('plot.html');
+                    $('#plot_link').hide();
+                }
+                }, 100);
+        </script>
+    {% endif %}
+<hr>
+<footer class="text-center">
+    Bora Canbula &copy; 2021
+</footer>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>
